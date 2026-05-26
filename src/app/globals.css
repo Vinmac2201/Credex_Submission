@@ -169,6 +169,12 @@ select {
   font-weight: 800;
 }
 
+.form-error {
+  margin: 12px 0 0;
+  color: #9a2f20;
+  font-weight: 700;
+}
+
 .icon-button {
   display: inline-grid;
   place-items: center;

@@ -28,6 +28,13 @@ describe("auditSpend", () => {
     expect(result.recommendations[0].recommendedAction).toBe("keep");
   });
 
+  it("does not recommend free Hobby for active Cursor Pro overspend", () => {
+    const result = run({ teamSize: 1, tools: [{ id: "cursor", plan: "Pro", monthlySpend: 25000, seats: 1 }] });
+    expect(result.recommendations[0].recommendedAction).toBe("review");
+    expect(result.recommendations[0].recommendedPlan).toBe("Pro list-price billing");
+    expect(result.recommendations[0].projectedMonthlySpend).toBe(1960);
+  });
+
   it("reviews enterprise plans for teams below enterprise scale", () => {
     const result = run({ teamSize: 8, tools: [{ id: "claude", plan: "Enterprise", monthlySpend: 120000, seats: 8 }] });
     expect(result.recommendations[0].recommendedAction).toBe("review");

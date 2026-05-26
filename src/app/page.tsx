@@ -40,6 +40,7 @@ export default function Home() {
   const [storageReady, setStorageReady] = useState(false);
   const [result, setResult] = useState<AuditResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [leadSent, setLeadSent] = useState(false);
   const [lead, setLead] = useState({ email: "", companyName: "", role: "", website: "" });
 
@@ -65,15 +66,22 @@ export default function Home() {
   async function submitAudit(event: FormEvent) {
     event.preventDefault();
     setLoading(true);
+    setError("");
     setResult(null);
-    const response = await fetch("/api/audit", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(formInput),
-    });
-    const json = (await response.json()) as AuditResult;
-    setResult(json);
-    setLoading(false);
+    try {
+      const response = await fetch("/api/audit", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(formInput),
+      });
+      if (!response.ok) throw new Error("Audit failed");
+      const json = (await response.json()) as AuditResult;
+      setResult(json);
+    } catch {
+      setError("The audit could not complete. Please try again in a moment.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function submitLead(event: FormEvent) {
@@ -188,6 +196,7 @@ export default function Home() {
             {loading ? "Auditing..." : "Run free audit"}
             <ArrowRight size={18} />
           </button>
+          {error && <p className="form-error">{error}</p>}
         </form>
 
         <aside className="results" aria-live="polite">

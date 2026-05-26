@@ -6,6 +6,18 @@ const dataDir = path.join(process.cwd(), ".data");
 const auditsPath = path.join(dataDir, "audits.json");
 const leadsPath = path.join(dataDir, "leads.json");
 
+type MemoryStore = {
+  audits: Record<string, AuditResult>;
+  leads: (LeadInput & { createdAt: string })[];
+};
+
+const memoryStore = (globalThis as typeof globalThis & { __spendcheckStore?: MemoryStore }).__spendcheckStore ?? {
+  audits: {},
+  leads: [],
+};
+
+(globalThis as typeof globalThis & { __spendcheckStore?: MemoryStore }).__spendcheckStore = memoryStore;
+
 async function readJson<T>(filePath: string, fallback: T): Promise<T> {
   try {
     return JSON.parse(await fs.readFile(filePath, "utf8")) as T;
@@ -53,9 +65,15 @@ export async function saveAudit(result: AuditResult) {
     body: JSON.stringify({ id, result: publicResult, created_at: publicResult.createdAt }),
   });
   if (!supabase) {
-    const audits = await readJson<Record<string, AuditResult>>(auditsPath, {});
-    audits[id] = publicResult;
-    await writeJson(auditsPath, audits);
+    memoryStore.audits[id] = publicResult;
+    try {
+      const audits = await readJson<Record<string, AuditResult>>(auditsPath, {});
+      audits[id] = publicResult;
+      await writeJson(auditsPath, audits);
+    } catch {
+      // Vercel serverless functions cannot rely on writing beside the app bundle.
+      // The in-memory fallback keeps the demo usable until Supabase is configured.
+    }
   }
   return publicResult;
 }
@@ -69,6 +87,7 @@ export async function getAudit(id: string) {
     const rows = (await supabase.json()) as { result: AuditResult }[];
     return rows[0]?.result ?? null;
   }
+  if (memoryStore.audits[id]) return memoryStore.audits[id];
   const audits = await readJson<Record<string, AuditResult>>(auditsPath, {});
   return audits[id] ?? null;
 }
@@ -88,9 +107,14 @@ export async function saveLead(lead: LeadInput) {
     }),
   });
   if (!supabase) {
-    const leads = await readJson<typeof payload[]>(leadsPath, []);
-    leads.push(payload);
-    await writeJson(leadsPath, leads);
+    memoryStore.leads.push(payload);
+    try {
+      const leads = await readJson<typeof payload[]>(leadsPath, []);
+      leads.push(payload);
+      await writeJson(leadsPath, leads);
+    } catch {
+      // Keep the lead capture flow non-blocking without Supabase.
+    }
   }
   return { ok: true };
 }

@@ -18,7 +18,7 @@ function cheaperSameVendor(tool: ToolInput, input: AuditInput) {
   const current = baselineFor(tool);
   const plans = PRICING[tool.id].filter((plan) => plan.monthlyInr !== null && !plan.enterprise);
   return plans
-    .filter((plan) => !(plan.monthlyInr === 0 && tool.seats > 1))
+    .filter((plan) => plan.monthlyInr !== 0)
     .filter((plan) => !(["Individual", "Plus", "Pro"].includes(plan.name) && tool.seats > 1 && ["github-copilot", "chatgpt", "claude"].includes(tool.id)))
     .filter((plan) => !plan.minSeats || input.teamSize >= plan.minSeats || tool.seats >= plan.minSeats)
     .filter((plan) => plan.useCases.includes(input.useCase) || plan.useCases.includes("mixed") || input.useCase === "mixed")
@@ -106,6 +106,23 @@ export function auditSpend(input: AuditInput, summary = ""): AuditResult {
           annualSavings: money((current - projected) * 12),
           reason: "At this API volume, the fastest savings path is usually discounted credits rather than switching model families.",
           evidence: ["Retail API invoices are usage-based.", "Credex-style credits target the same vendor spend at a discount."],
+        };
+      }
+
+      if (downgrade && downgrade.plan.name.toLowerCase() === tool.plan.toLowerCase()) {
+        evidence.push(`${downgrade.plan.name} public list pricing is materially below the entered monthly spend.`);
+        return {
+          toolId: tool.id,
+          toolName: TOOL_LABELS[tool.id],
+          currentPlan: tool.plan,
+          currentMonthlySpend: current,
+          recommendedAction: "review",
+          recommendedPlan: `${downgrade.plan.name} list-price billing`,
+          projectedMonthlySpend: money(downgrade.cost),
+          monthlySavings: money(current - downgrade.cost),
+          annualSavings: money((current - downgrade.cost) * 12),
+          reason: `Your entered spend is far above public ${TOOL_LABELS[tool.id]} ${downgrade.plan.name} pricing for ${tool.seats} seat${tool.seats === 1 ? "" : "s"}. Verify the invoice before changing tools.`,
+          evidence,
         };
       }
 
