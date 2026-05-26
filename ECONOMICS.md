@@ -1,0 +1,9 @@
+# Economics
+
+Assumptions: a qualified Credex buyer in India spends ₹2L-₹20L/month on AI tooling or API credits. If Credex earns a 10% gross margin on discounted credits and the median converted account buys ₹50L/year in credits, gross profit is about ₹5L/year. If accounts renew or expand, first-year converted lead value could reasonably be ₹3.5L-₹7L after support and fulfillment costs. I will use ₹4.5L gross profit per converted customer.
+
+Channel CAC can be very low because the tool is free and distribution is founder-led. Hacker News, Reddit, and Indian founder WhatsApp/Slack communities cost time only; assume 8 hours to produce and respond, valued at ₹4,000/hour, or ₹32,000 for 40 audits: ₹800 per audit. Warm founder DMs may take 5 minutes each; 100 DMs equals about 8 hours, and if 20 audit, CAC per audit is about ₹1,600. Partner/newsletter swaps with AI infrastructure writers could be ₹0 cash but require a useful teardown; assume ₹24,000 of time for 50 audits, or ₹480 per audit.
+
+Profitability threshold: if 100 audits cost ₹80,000 in founder time and infrastructure, then at ₹4.5L gross profit per customer the funnel needs 0.18 customers. In funnel terms: 100 audits -> 25 emails -> 8 consultations -> 2 serious opportunities -> 1 purchase is strongly profitable. More conservatively, 100 audits -> 20 emails -> 4 consultations -> 1 opportunity -> 0.25 purchases still clears the time cost.
+
+To drive ₹8.3Cr ARR, roughly $1M ARR, in 18 months, the tool needs to become a repeatable source of about ₹69L/month in annualized credit purchases. At ₹50L ARR per purchasing customer, that is about 17 active customers. If audit-to-purchase conversion is 1%, Credex needs 1,700 completed audits over 18 months, or about 95 audits/month. If the average customer is only ₹20L ARR, it needs 42 customers and around 4,200 audits at 1% conversion. The key truth: this works only if high-savings audits are real and sales follow-up is fast.
