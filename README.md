@@ -2,7 +2,7 @@
 
 SpendCheck AI is a free AI tool-spend audit for Indian startup founders and engineering managers. It benchmarks Cursor, Claude, ChatGPT, Copilot, Gemini, API, and Windsurf spend in rupees, then shows plan-fit recommendations and Credex credit opportunities without requiring login or email before value.
 
-Live URL: add your deployed Vercel/Netlify URL here.
+Live URL: https://credex-submission.vercel.app
 
 ## Screenshots
 
