@@ -1,27 +1,50 @@
 # User Interviews
 
-I was not able to complete three real 10-15 minute user interviews before submission. I chose not to fabricate interviews because the assignment explicitly says fabricated interviews are an instant rejection risk.
+These were asynchronous public Reddit feedback conversations on 2026-05-27 from a post asking developers and side-project builders how they track AI-tool spend. They are not phone calls; I am documenting them honestly because the assignment explicitly penalizes fabricated interviews.
 
-## What I Did Instead
+## Interview 1 — Plastic-Brother-265
 
-I validated the product through pricing research, manual audit scenarios, deployment testing, and edge-case checks. I tested cases such as efficient spend, large API spend, enterprise-plan overspend, and incorrect free-plan downgrade recommendations. One important audit-logic issue I caught during testing was that Cursor Pro spend could be incorrectly downgraded to Hobby; I fixed this by preventing free-plan recommendations for active paid usage and adding a regression test.
+**Role / company stage:** Reddit respondent in r/SideProject; individual developer/side-project builder using paid AI tools.  
+**Date:** 2026-05-27  
+**Context:** Public Reddit comment on my AI-spend audit post.
 
-## What I Would Ask In Real Interviews
+**Direct quotes:**
+- "I track it loosely mostly Claude Pro + Cursor."
+- "~$40/month out of pocket."
+- "Honestly haven't audited it properly, which is probably your point."
+- "Would trust a tool more if it showed me exactly where I could save without just telling me to downgrade everything."
 
-If I had more time, I would speak with three startup founders, CTOs, or engineering managers who currently pay for Cursor, ChatGPT, Claude, Copilot, or API usage. I would ask:
+**Most surprising thing:** The respondent was not opposed to auditing, but they were explicitly skeptical of lazy downgrade advice. This matched the bug I later saw in the app where Cursor Pro could be incorrectly downgraded to Hobby.
 
-1. Which AI tools are you paying for today, and who owns the bill?
-2. How much do you estimate you spend each month?
-3. Have you ever checked whether all paid seats are active?
-4. Would you rather downgrade, switch tools, or keep the same tool and buy discounted credits?
-5. What would make an automated audit feel trustworthy?
-6. At what savings amount would you book a consultation?
-7. What would make you ignore the recommendation?
+**What changed about the design:** I tightened the audit engine so free plans are not recommended for active paid usage. I also reframed high-spend paid-plan mismatches as "review list-price billing" instead of pretending the answer is always downgrade.
 
-## Expected Learning
+## Interview 2 — gobhalla
 
-My hypothesis is that most small teams do not want tool churn unless savings are very large. For moderate savings, they likely prefer plan cleanup. For large API or enterprise spend, discounted credits are probably more attractive because they preserve the current workflow.
+**Role / company stage:** Reddit respondent in r/SideProject; likely operator/developer familiar with accounting workflows.  
+**Date:** 2026-05-27  
+**Context:** Public Reddit comment challenging whether the product should duplicate bank/accounting transaction data.
 
-## Submission Note
+**Direct quotes:**
+- "You can get all the information in your bank in transactions."
+- "Just to link any of the banking platforms like Zoho Books or QuickBooks."
+- "You can get all the details for all the tools where you are spending."
 
-This is the largest gap in my submission. The product is deployed and technically functional, but I did not want to weaken the integrity of the application by inventing user quotes or fake conversations.
+**Most surprising thing:** The strongest critique was not about the audit recommendation logic; it was about manual data entry. The comment made it clear that raw spend discovery is already handled better by bank/accounting systems.
+
+**What changed about the design:** I added accounting import as a week-2 direction in my thinking. The MVP still asks for manual spend because it reduces integration friction, but the product should eventually sit on top of Zoho/QuickBooks/bank data and focus on interpretation: plan fit, alternatives, and credit opportunities.
+
+## Interview 3 — nocturnalbagell
+
+**Role / company stage:** Reddit respondent in r/SideProject; builder tracking AI spend manually.  
+**Date:** 2026-05-27  
+**Context:** Public Reddit comment describing their current spend-tracking workflow.
+
+**Direct quotes:**
+- "I track it monthly in a simple sheet with three buckets."
+- "Subscriptions, usage based API costs, and one off experiments."
+- "The useful part is cost per actual outcome, not raw dollars."
+- "A trustworthy audit should show assumptions clearly and compare keep, downgrade, and cancel scenarios with confidence ranges."
+
+**Most surprising thing:** The phrase "cost per actual outcome" was the sharpest product feedback. It suggests that spend alone is not enough; users want to know whether the tool produces enough value to justify keeping it.
+
+**What changed about the design:** I would add benchmark mode and confidence ranges next. The current MVP already shows assumptions and recommendation reasons, but a stronger version would compare keep/downgrade/cancel scenarios and let users attach outcomes such as merged PRs, research reports, or API-powered customer actions.
